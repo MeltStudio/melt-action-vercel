@@ -1,0 +1,6 @@
+{
+  "**/*.{js,jsx,ts,tsx,hbs,html,css,scss,json,graphql,yml,yaml,md}": [
+    "prettier --write"
+  ],
+  "**/*.{ts,tsx}": ["eslint --ext .ts,tsx --max-warnings=0"]
+}
