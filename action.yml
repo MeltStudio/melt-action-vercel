@@ -1,13 +1,36 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'Create Vercel deployment'
+description: 'Create a new production or preview Vercel deployment'
+
 inputs:
-  who-to-greet: # id of input
-    description: 'Who to greet'
+  vercel-team-id:
+    description: 'Vercel team id'
     required: true
-    default: 'World'
+  vercel-project-id:
+    description: 'Vercel project id'
+    required: true
+  vercel-token:
+    description: 'Vercel token to authenticate'
+    required: true
+  vercel-cli-version:
+    description: Vercel CLI version to use
+    required: false
+    default: 'latest'
+  vercel-is-production:
+    description: Wheter or not this is a production release
+    required: false
+    default: 'false'
+  github-comment:
+    description: 'Create comment on the pull request with the deployment information'
+    required: false
+    default: 'true'
+  github-token:
+    description: 'GitHub token used to create the pull request comment'
+    required: false
+
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  deployment-url:
+    description: 'URL of the created deployment'
+
 runs:
   using: 'node16'
   main: 'index.js'

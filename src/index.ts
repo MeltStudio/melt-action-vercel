@@ -1,18 +1,36 @@
 import * as core from '@actions/core';
-import * as github from '@actions/github';
 
-function run(): void {
+import { validateEvent } from './github';
+import Vercel from './vercel';
+
+async function run(): Promise<void> {
   try {
-    // `who-to-greet` input defined in action metadata file
-    const nameToGreet = core.getInput('who-to-greet');
-    console.log(`Hello ${nameToGreet}!`);
+    validateEvent();
 
-    const time = new Date().toTimeString();
-    core.setOutput('time', time);
+    const vercel = new Vercel();
 
-    // Get the JSON webhook payload for the event that triggered the workflow
-    const payload = JSON.stringify(github.context.payload, undefined, 2);
-    console.log(`The event payload: ${payload}`);
+    core.startGroup('Pulling Vercel environment');
+    await vercel.pull();
+    core.endGroup();
+
+    core.startGroup('Building application');
+    await vercel.build();
+    core.endGroup();
+
+    core.startGroup('Deploying to Vercel');
+    const { stdout: vercelDeploymentUrl } = await vercel.deploy();
+    core.endGroup();
+
+    if (vercelDeploymentUrl && vercel.env === 'preview') {
+      core.startGroup('Setting Vercel deployment alias');
+      const refNameAlias = await vercel.calculateRefNameAlias();
+      await vercel.alias(vercelDeploymentUrl, refNameAlias);
+      core.endGroup();
+    }
+
+    // TODO: add github comment
+
+    core.setOutput('deployment-url', vercelDeploymentUrl);
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);
@@ -20,4 +38,8 @@ function run(): void {
   }
 }
 
-run();
+run().catch((error) => {
+  if (error instanceof Error) {
+    core.setFailed(error.message);
+  }
+});
