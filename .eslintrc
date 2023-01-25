@@ -96,6 +96,7 @@
     "public",
     "styles",
     "coverage",
-    "dist"
+    "dist",
+    "app"
   ]
 }

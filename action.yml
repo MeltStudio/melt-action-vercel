@@ -16,7 +16,7 @@ inputs:
     required: false
     default: 'latest'
   vercel-is-production:
-    description: Wheter or not this is a production release
+    description: Wheter or not use --prod and --environment=production for commands
     required: false
     default: 'false'
   github-comment:

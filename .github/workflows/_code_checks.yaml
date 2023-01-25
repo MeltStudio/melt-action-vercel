@@ -1,0 +1,30 @@
+name: Run code checks and quality tools
+
+on: workflow_call
+
+jobs:
+  code-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Setup node with cache'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run ESlint
+        run: yarn lint
+      - name: Run TSC
+        run: yarn type-check
+      - name: Run tests
+        run: yarn test
+      - name: Check dist folder
+        run: |
+          yarn package
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            exit 1
+          fi
