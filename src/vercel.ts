@@ -105,7 +105,7 @@ class Vercel {
     let refNameSlug = refName
       .trim()
       .toLowerCase()
-      .replace(/[_.]+/g, '-')
+      .replace(/[_./]+/g, '-')
       .replace(/--+/, '-')
       .replace(/[^\w\d-]/, '');
 
