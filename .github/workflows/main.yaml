@@ -15,4 +15,4 @@ jobs:
     needs: [code-checks]
     uses: ./.github/workflows/_sem_release.yaml
     secrets:
-      semantic_release_token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+      semantic-release-token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
