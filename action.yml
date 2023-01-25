@@ -30,6 +30,8 @@ inputs:
 outputs:
   deployment-url:
     description: 'URL of the created deployment'
+  preview-alias-url:
+    description: 'Branch alias URL for the deployment'
 
 runs:
   using: 'node16'

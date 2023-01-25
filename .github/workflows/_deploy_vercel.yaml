@@ -37,9 +37,14 @@ jobs:
           key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
       - name: Deploy to Vercel
+        id: deploy
         uses: ./
         with:
           vercel-team-id: ${{ secrets.vercel-team-id }}
           vercel-project-id: ${{ secrets.vercel-project-id }}
           vercel-token: ${{ secrets.vercel-token }}
           vercel-is-production: ${{ inputs.environment == 'Production' }}
+      - name: Print deployment URL
+        run: |
+          echo "Deployment URL: ${{ steps.deploy.outputs.deployment-url }}"
+          echo "Alias URL: ${{ steps.deploy.outputs.preview-alias-url }}"

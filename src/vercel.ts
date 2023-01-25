@@ -100,6 +100,7 @@ class Vercel {
   public async calculateRefNameAlias(): Promise<string> {
     const team = await this.client.team(this.teamId);
     const project = await this.client.project(this.projectId);
+
     const refName = getRefName();
     let refNameSlug = refName
       .trim()
@@ -114,6 +115,10 @@ class Vercel {
     // https://vercel.com/docs/concepts/deployments/generated-urls#truncation
     const maxLength = 63 - project.name.length - team.slug.length - 2;
     if (refNameSlug.length > maxLength) {
+      core.info(
+        'Truncating git ref name slug because it exceeds the max length'
+      );
+
       // vercel uses a hash of 6 characters when the branch name exceeds the max
       // length
       // https://vercel.com/docs/concepts/deployments/generated-urls#truncation
@@ -125,7 +130,10 @@ class Vercel {
       refNameSlug = `${refNameSlug.slice(0, -7)}-${hash}`;
     }
 
-    return `${project.name}-${refNameSlug}-${team.slug}.vercel.app`;
+    const alias = `${project.name}-${refNameSlug}-${team.slug}.vercel.app`;
+    core.info(`Calculated alias: ${alias}`);
+
+    return alias;
   }
 
   public async alias(deployUrl: string, aliasUrl: string): Promise<ExecReturn> {
