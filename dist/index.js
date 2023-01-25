@@ -14501,10 +14501,11 @@ const axios_1 = __importDefault(__nccwpck_require__(8757));
 class VercelClient {
     constructor() {
         const token = core.getInput('vercel-token', { required: true });
-        this.teamId = core.getInput('vercel-team-id', { required: true });
+        const teamId = core.getInput('vercel-team-id', { required: true });
         this.client = axios_1.default.create({
-            baseURL: 'https://api.vercel.com/v9',
+            baseURL: 'https://api.vercel.com',
             headers: { Authorization: `Bearer ${token}` },
+            params: { teamId },
         });
     }
     team(teamId) {
@@ -14517,7 +14518,7 @@ class VercelClient {
     project(projectId) {
         return __awaiter(this, void 0, void 0, function* () {
             core.info(`Fetching project ${projectId} information from Vercel`);
-            const response = yield this.client.get(`/v9/projects/${projectId}`, { params: { teamId: this.teamId } });
+            const response = yield this.client.get(`/v9/projects/${projectId}`);
             return response.data;
         });
     }
