@@ -4,3 +4,4 @@
 yarn lint-staged
 yarn type-check
 yarn test
+yarn package && git add dist

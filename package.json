@@ -2,7 +2,7 @@
   "name": "melt-action-vercel",
   "version": "0.0.0",
   "description": "Melt Studio's action to create a Vercel deployment",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": "git@github.com:MeltStudio/melt-action-vercel.git",
   "author": "piedrahitapablo <piedra@meltstudio.co>",
   "license": "MIT",
@@ -12,7 +12,8 @@
     "lint": "eslint --ext .ts,tsx --max-warnings=0 .",
     "type-check": "tsc --noEmit",
     "test": "echo TODO",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "package": "ncc build --source-map --license licenses.txt src/index.ts"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
@@ -25,6 +26,7 @@
     "@commitlint/config-conventional": "^17.4.2",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
+    "@vercel/ncc": "^0.36.1",
     "commitizen": "^4.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.32.0",
