@@ -14648,7 +14648,7 @@ class Vercel {
             let refNameSlug = refName
                 .trim()
                 .toLowerCase()
-                .replace(/[_.]+/g, '-')
+                .replace(/[_./]+/g, '-')
                 .replace(/--+/, '-')
                 .replace(/[^\w\d-]/, '');
             // 63 is the max allowed length for aliases on vercel, so we need to know
