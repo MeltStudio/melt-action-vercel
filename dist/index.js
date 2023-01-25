@@ -14500,15 +14500,11 @@ const axios_1 = __importDefault(__nccwpck_require__(8757));
 class VercelClient {
     constructor() {
         const token = core.getInput('vercel-token', { required: true });
-        const scope = core.getInput('vercel-scope', { required: true });
+        const teamId = core.getInput('vercel-team-id', { required: true });
         this.client = axios_1.default.create({
             baseURL: 'https://api.vercel.com/v9',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            params: {
-                teamId: scope,
-            },
+            headers: { Authorization: `Bearer ${token}` },
+            params: { teamId },
         });
     }
     team(teamId) {

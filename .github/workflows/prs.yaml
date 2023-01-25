@@ -1,0 +1,34 @@
+name: Check PR
+
+on: [pull_request]
+
+jobs:
+  prepare:
+    name: Cleanup existing workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.11.0
+        with:
+          access_token: ${{ github.token }}
+
+  lint-commits:
+    name: Lint commits
+    needs: [prepare]
+    uses: ./.github/workflows/_lint_commits.yaml
+
+  code-checks:
+    name: Run code checks and quality tools
+    needs: [prepare]
+    uses: ./.github/workflows/_code_checks.yaml
+
+  deploy-web:
+    name: Deploy to vercel
+    needs: [code-checks]
+    uses: ./.github/workflows/_deploy_vercel.yaml
+    with:
+      environment: Preview
+    secrets:
+      vercel-team-id: ${{ secrets.VERCEL_ORG_ID }}
+      vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      vercel-token: ${{ secrets.VERCEL_TOKEN }}

@@ -1,0 +1,45 @@
+name: Deploy to vercel
+
+on:
+  workflow_call:
+    secrets:
+      vercel-team-id:
+        description: 'Vercel team id'
+        required: true
+      vercel-project-id:
+        description: 'Vercel project id'
+        required: true
+      vercel-token:
+        description: 'Vercel token to authenticate'
+        required: true
+    inputs:
+      environment:
+        description: 'The deploy environment'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Setup node with cache
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      - name: Setup Nextjs cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/app/.next/cache
+          key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+      - name: Deploy to Vercel
+        uses: ./
+        with:
+          vercel-team-id: ${{ secrets.vercel-team-id }}
+          vercel-project-id: ${{ secrets.vercel-project-id }}
+          vercel-token: ${{ secrets.vercel-token }}
+          vercel-is-production: ${{ inputs.environment == 'Production' }}

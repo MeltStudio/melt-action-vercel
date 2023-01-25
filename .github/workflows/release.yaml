@@ -1,0 +1,16 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy-web:
+    name: Deploy to vercel
+    uses: ./.github/workflows/_deploy_vercel.yaml
+    with:
+      environment: Production
+    secrets:
+      vercel-team-id: ${{ secrets.VERCEL_ORG_ID }}
+      vercel-project-id: ${{ secrets.VERCEL_WEB_PROJECT_ID }}
+      vercel-token: ${{ secrets.VERCEL_TOKEN }}
