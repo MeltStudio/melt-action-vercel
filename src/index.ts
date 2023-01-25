@@ -19,18 +19,18 @@ async function run(): Promise<void> {
 
     core.startGroup('Deploying to Vercel');
     const { stdout: vercelDeploymentUrl } = await vercel.deploy();
+    core.setOutput('deployment-url', vercelDeploymentUrl);
     core.endGroup();
 
     if (vercelDeploymentUrl && vercel.env === 'preview') {
       core.startGroup('Setting Vercel deployment alias');
       const refNameAlias = await vercel.calculateRefNameAlias();
       await vercel.alias(vercelDeploymentUrl, refNameAlias);
+      core.setOutput('preview-alias-url', refNameAlias);
       core.endGroup();
     }
 
     // TODO: add github comment
-
-    core.setOutput('deployment-url', vercelDeploymentUrl);
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);

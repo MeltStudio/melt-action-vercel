@@ -14428,15 +14428,16 @@ function run() {
             core.endGroup();
             core.startGroup('Deploying to Vercel');
             const { stdout: vercelDeploymentUrl } = yield vercel.deploy();
+            core.setOutput('deployment-url', vercelDeploymentUrl);
             core.endGroup();
             if (vercelDeploymentUrl && vercel.env === 'preview') {
                 core.startGroup('Setting Vercel deployment alias');
                 const refNameAlias = yield vercel.calculateRefNameAlias();
                 yield vercel.alias(vercelDeploymentUrl, refNameAlias);
+                core.setOutput('preview-alias-url', refNameAlias);
                 core.endGroup();
             }
             // TODO: add github comment
-            core.setOutput('deployment-url', vercelDeploymentUrl);
         }
         catch (error) {
             if (error instanceof Error) {
@@ -14500,22 +14501,23 @@ const axios_1 = __importDefault(__nccwpck_require__(8757));
 class VercelClient {
     constructor() {
         const token = core.getInput('vercel-token', { required: true });
-        const teamId = core.getInput('vercel-team-id', { required: true });
+        this.teamId = core.getInput('vercel-team-id', { required: true });
         this.client = axios_1.default.create({
             baseURL: 'https://api.vercel.com/v9',
             headers: { Authorization: `Bearer ${token}` },
-            params: { teamId },
         });
     }
     team(teamId) {
         return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Fetching team ${teamId} information from Vercel`);
             const response = yield this.client.get(`/v2/teams/${teamId}`);
             return response.data;
         });
     }
     project(projectId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.client.get(`/v9/projects/${projectId}`);
+            core.info(`Fetching project ${projectId} information from Vercel`);
+            const response = yield this.client.get(`/v9/projects/${projectId}`, { params: { teamId: this.teamId } });
             return response.data;
         });
     }
@@ -14654,6 +14656,7 @@ class Vercel {
             // https://vercel.com/docs/concepts/deployments/generated-urls#truncation
             const maxLength = 63 - project.name.length - team.slug.length - 2;
             if (refNameSlug.length > maxLength) {
+                core.info('Truncating git ref name slug because it exceeds the max length');
                 // vercel uses a hash of 6 characters when the branch name exceeds the max
                 // length
                 // https://vercel.com/docs/concepts/deployments/generated-urls#truncation
@@ -14664,7 +14667,9 @@ class Vercel {
                     .slice(0, 6);
                 refNameSlug = `${refNameSlug.slice(0, -7)}-${hash}`;
             }
-            return `${project.name}-${refNameSlug}-${team.slug}.vercel.app`;
+            const alias = `${project.name}-${refNameSlug}-${team.slug}.vercel.app`;
+            core.info(`Calculated alias: ${alias}`);
+            return alias;
         });
     }
     alias(deployUrl, aliasUrl) {
