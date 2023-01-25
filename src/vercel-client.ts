@@ -16,15 +16,14 @@ interface VercelProject {
 class VercelClient {
   private client: Axios;
 
-  private teamId: string;
-
   constructor() {
     const token = core.getInput('vercel-token', { required: true });
-    this.teamId = core.getInput('vercel-team-id', { required: true });
+    const teamId = core.getInput('vercel-team-id', { required: true });
 
     this.client = axios.create({
-      baseURL: 'https://api.vercel.com/v9',
+      baseURL: 'https://api.vercel.com',
       headers: { Authorization: `Bearer ${token}` },
+      params: { teamId },
     });
   }
 
@@ -38,8 +37,7 @@ class VercelClient {
   public async project(projectId: string): Promise<VercelProject> {
     core.info(`Fetching project ${projectId} information from Vercel`);
     const response = await this.client.get<VercelProject>(
-      `/v9/projects/${projectId}`,
-      { params: { teamId: this.teamId } }
+      `/v9/projects/${projectId}`
     );
 
     return response.data;
