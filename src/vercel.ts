@@ -2,7 +2,6 @@ import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as crypto from 'crypto';
 
-import { getRefName } from './github';
 import VercelClient from './vercel-client';
 
 type EnvType = 'preview' | 'production';
@@ -24,13 +23,18 @@ class Vercel {
 
   private readonly client: VercelClient;
 
-  constructor() {
-    const isProd = core.getBooleanInput('vercel-is-production');
-    this.env = isProd ? 'production' : 'preview';
+  private readonly refName: string;
+
+  constructor(refName: string) {
+    this.refName = refName;
+
     this.teamId = core.getInput('vercel-team-id', { required: true });
     this.projectId = core.getInput('vercel-project-id', { required: true });
     this.token = core.getInput('vercel-token', { required: true });
     this.version = core.getInput('vercel-cli-version');
+
+    const isProd = core.getBooleanInput('vercel-is-production');
+    this.env = isProd ? 'production' : 'preview';
 
     this.client = new VercelClient();
 
@@ -72,8 +76,7 @@ class Vercel {
   public async pull(): Promise<ExecReturn> {
     const args: string[] = ['pull', '--yes', `--environment=${this.env}`];
     if (this.env === 'preview') {
-      const branch = getRefName();
-      args.push(`--git-branch=${branch}`);
+      args.push(`--git-branch=${this.refName}`);
     }
 
     return this.exec(args);
@@ -101,8 +104,7 @@ class Vercel {
     const team = await this.client.team(this.teamId);
     const project = await this.client.project(this.projectId);
 
-    const refName = getRefName();
-    let refNameSlug = refName
+    let refNameSlug = this.refName
       .trim()
       .toLowerCase()
       .replace(/[_./]+/g, '-')
@@ -138,6 +140,17 @@ class Vercel {
 
   public async alias(deployUrl: string, aliasUrl: string): Promise<ExecReturn> {
     return this.exec(['alias', deployUrl, aliasUrl]);
+  }
+
+  public async buildCommentBody(deploymentId: string): Promise<string> {
+    const deployment = await this.client.deployment(deploymentId);
+    const aliases = await this.client.aliases(deployment.id);
+
+    const alias = [deployment.url, ...aliases.aliases.map((a) => a.alias)]
+      .map((a) => `<a href="https://${a}" target="_blank">${a}</a>`)
+      .join('\n');
+
+    return `:rocket: Successfully deployed to the following URLs:\n\n${alias}`;
   }
 }
 

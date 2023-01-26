@@ -28,7 +28,9 @@ jobs:
     uses: ./.github/workflows/_deploy_vercel.yaml
     with:
       environment: Preview
+      github-comment: true
     secrets:
       vercel-team-id: ${{ secrets.VERCEL_ORG_ID }}
       vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
       vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}

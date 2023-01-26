@@ -20,9 +20,9 @@ inputs:
     required: false
     default: 'false'
   github-comment:
-    description: 'Create comment on the pull request with the deployment information'
+    description: 'Create comment on the pull request or commit with the deployment information'
     required: false
-    default: 'true'
+    default: 'false'
   github-token:
     description: 'GitHub token used to create the pull request comment'
     required: false

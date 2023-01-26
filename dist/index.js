@@ -14310,6 +14310,95 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 5307:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
+class GitHubClient {
+    constructor() {
+        const token = core.getInput('github-token', { required: true });
+        this.client = github.getOctokit(token);
+    }
+    listCommitComments() {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Fetching comments for commit '${github.context.sha}'`);
+            const response = yield this.client.rest.repos.listCommentsForCommit(Object.assign(Object.assign({}, github.context.repo), { commit_sha: github.context.sha }));
+            return response.data;
+        });
+    }
+    createCommitComment(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Creating comment on commit '${github.context.sha}'`);
+            yield this.client.rest.repos.createCommitComment(Object.assign(Object.assign({}, github.context.repo), { commit_sha: github.context.sha, body }));
+        });
+    }
+    updateCommitComment(commentId, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Updating comment on commit '${github.context.sha}'`);
+            yield this.client.rest.repos.updateCommitComment(Object.assign(Object.assign({}, github.context.repo), { comment_id: commentId, body }));
+        });
+    }
+    listIssueComments() {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Fetching comments for issue '${github.context.issue.number}'`);
+            const response = yield this.client.rest.issues.listComments(Object.assign(Object.assign({}, github.context.repo), { issue_number: github.context.issue.number }));
+            return response.data;
+        });
+    }
+    createIssueComment(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Creating comment on issue '${github.context.issue.number}'`);
+            yield this.client.rest.issues.createComment(Object.assign(Object.assign({}, github.context.repo), { issue_number: github.context.issue.number, body }));
+        });
+    }
+    updateIssueComment(commentId, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Updating comment on issue '${github.context.issue.number}'`);
+            yield this.client.rest.issues.updateComment(Object.assign(Object.assign({}, github.context.repo), { comment_id: commentId, body }));
+        });
+    }
+}
+exports["default"] = GitHubClient;
+
+
+/***/ }),
+
 /***/ 978:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -14338,35 +14427,98 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getRefName = exports.validateEvent = void 0;
+const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-function isPullRequest() {
-    return github.context.eventName === 'pull_request';
-}
-function isPush() {
-    return github.context.eventName === 'push';
-}
-function isRelease() {
-    return github.context.eventName === 'release';
-}
-function validateEvent() {
-    if (isPullRequest() || isPush() || isRelease()) {
-        return;
+const github_client_1 = __importDefault(__nccwpck_require__(5307));
+class GitHub {
+    constructor() {
+        this.isPullRequest = github.context.eventName === 'pull_request';
+        this.isPush = github.context.eventName === 'push';
+        this.isRelease = github.context.eventName === 'release';
+        this.client = null;
+        if (!this.isPullRequest && !this.isPush && !this.isRelease) {
+            throw new Error(`Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, push, release]`);
+        }
     }
-    throw new Error(`Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, push, release]`);
-}
-exports.validateEvent = validateEvent;
-function getRefName() {
-    if (isPullRequest()) {
-        return process.env.GITHUB_HEAD_REF;
+    getClient() {
+        if (this.client == null) {
+            this.client = new github_client_1.default();
+        }
+        return this.client;
     }
-    if (isPush() || isRelease()) {
-        return process.env.GITHUB_REF_NAME;
+    getRefName() {
+        if (this.isPullRequest) {
+            return process.env.GITHUB_HEAD_REF;
+        }
+        if (this.isPush || this.isRelease) {
+            return process.env.GITHUB_REF_NAME;
+        }
+        throw new Error(`Could not get git ref name for event '${github.context.eventName}'`);
     }
-    throw new Error(`Could not get git ref name for event '${github.context.eventName}'`);
+    getEventComments() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.isPullRequest) {
+                return this.getClient().listIssueComments();
+            }
+            if (this.isPush) {
+                return this.getClient().listCommitComments();
+            }
+            throw new Error(`Unable to get comments for event '${github.context.eventName}'`);
+        });
+    }
+    findDeploymentComment(text) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const comments = yield this.getEventComments();
+            const comment = comments.find((com) => { var _a; return (_a = com.body) === null || _a === void 0 ? void 0 : _a.startsWith(text); });
+            if (comment != null) {
+                return comment.id;
+            }
+            return null;
+        });
+    }
+    comment(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!core.getBooleanInput('github-comment')) {
+                core.info("Ignoring comment because 'github-comment' is false");
+                return;
+            }
+            const commentId = yield this.findDeploymentComment(body.split('\n')[0]);
+            if (this.isPullRequest) {
+                if (commentId != null) {
+                    yield this.getClient().updateIssueComment(commentId, body);
+                }
+                else {
+                    yield this.getClient().createIssueComment(body);
+                }
+                return;
+            }
+            if (this.isPush) {
+                if (commentId != null) {
+                    yield this.getClient().updateCommitComment(commentId, body);
+                }
+                else {
+                    yield this.getClient().createCommitComment(body);
+                }
+                return;
+            }
+            core.error(`Ignoring comment because '${github.context.eventName}' is not a valid event`);
+        });
+    }
 }
-exports.getRefName = getRefName;
+exports["default"] = GitHub;
 
 
 /***/ }),
@@ -14413,13 +14565,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const github_1 = __nccwpck_require__(978);
+const github_1 = __importDefault(__nccwpck_require__(978));
 const vercel_1 = __importDefault(__nccwpck_require__(5488));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            (0, github_1.validateEvent)();
-            const vercel = new vercel_1.default();
+            const github = new github_1.default();
+            const vercel = new vercel_1.default(github.getRefName());
             core.startGroup('Pulling Vercel environment');
             yield vercel.pull();
             core.endGroup();
@@ -14437,7 +14589,10 @@ function run() {
                 core.setOutput('preview-alias-url', refNameAlias);
                 core.endGroup();
             }
-            // TODO: add github comment
+            core.startGroup('Creating GitHub comment');
+            const body = yield vercel.buildCommentBody(vercelDeploymentUrl);
+            yield github.comment(body);
+            core.endGroup();
         }
         catch (error) {
             if (error instanceof Error) {
@@ -14510,15 +14665,30 @@ class VercelClient {
     }
     team(teamId) {
         return __awaiter(this, void 0, void 0, function* () {
-            core.info(`Fetching team ${teamId} information from Vercel`);
+            core.info(`Fetching team '${teamId}' information from Vercel`);
             const response = yield this.client.get(`/v2/teams/${teamId}`);
             return response.data;
         });
     }
     project(projectId) {
         return __awaiter(this, void 0, void 0, function* () {
-            core.info(`Fetching project ${projectId} information from Vercel`);
+            core.info(`Fetching project '${projectId}' information from Vercel`);
             const response = yield this.client.get(`/v9/projects/${projectId}`);
+            return response.data;
+        });
+    }
+    deployment(deploymentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const cleanId = deploymentId.replace(/^https:\/\//, '');
+            core.info(`Fetching deployment '${cleanId}' information from Vercel`);
+            const response = yield this.client.get(`/v13/deployments/${cleanId}`);
+            return response.data;
+        });
+    }
+    aliases(deploymentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            core.info(`Fetching deployment '${deploymentId}' aliases from Vercel`);
+            const response = yield this.client.get(`/v13/deployments/${deploymentId}/aliases`);
             return response.data;
         });
     }
@@ -14572,16 +14742,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const crypto = __importStar(__nccwpck_require__(6113));
-const github_1 = __nccwpck_require__(978);
 const vercel_client_1 = __importDefault(__nccwpck_require__(6745));
 class Vercel {
-    constructor() {
-        const isProd = core.getBooleanInput('vercel-is-production');
-        this.env = isProd ? 'production' : 'preview';
+    constructor(refName) {
+        this.refName = refName;
         this.teamId = core.getInput('vercel-team-id', { required: true });
         this.projectId = core.getInput('vercel-project-id', { required: true });
         this.token = core.getInput('vercel-token', { required: true });
         this.version = core.getInput('vercel-cli-version');
+        const isProd = core.getBooleanInput('vercel-is-production');
+        this.env = isProd ? 'production' : 'preview';
         this.client = new vercel_client_1.default();
         // set the environment variables for the Vercel CLI
         core.exportVariable('VERCEL_ORG_ID', this.teamId);
@@ -14616,8 +14786,7 @@ class Vercel {
         return __awaiter(this, void 0, void 0, function* () {
             const args = ['pull', '--yes', `--environment=${this.env}`];
             if (this.env === 'preview') {
-                const branch = (0, github_1.getRefName)();
-                args.push(`--git-branch=${branch}`);
+                args.push(`--git-branch=${this.refName}`);
             }
             return this.exec(args);
         });
@@ -14644,8 +14813,7 @@ class Vercel {
         return __awaiter(this, void 0, void 0, function* () {
             const team = yield this.client.team(this.teamId);
             const project = yield this.client.project(this.projectId);
-            const refName = (0, github_1.getRefName)();
-            let refNameSlug = refName
+            let refNameSlug = this.refName
                 .trim()
                 .toLowerCase()
                 .replace(/[_./]+/g, '-')
@@ -14676,6 +14844,16 @@ class Vercel {
     alias(deployUrl, aliasUrl) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.exec(['alias', deployUrl, aliasUrl]);
+        });
+    }
+    buildCommentBody(deploymentId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deployment = yield this.client.deployment(deploymentId);
+            const aliases = yield this.client.aliases(deployment.id);
+            const alias = [deployment.url, ...aliases.aliases.map((a) => a.alias)]
+                .map((a) => `<a href="https://${a}" target="_blank">${a}</a>`)
+                .join('\n');
+            return `:rocket: Successfully deployed to the following URLs:\n\n${alias}`;
         });
     }
 }
