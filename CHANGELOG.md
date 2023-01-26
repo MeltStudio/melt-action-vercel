@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/MeltStudio/melt-action-vercel/compare/v1.0.0...v1.1.0) (2023-01-26)
+
+
+### Features
+
+* add github comments ([58ee724](https://github.com/MeltStudio/melt-action-vercel/commit/58ee72441a1074be9c74bdbaffff3749117d419a))
+
 # 1.0.0 (2023-01-25)
 
 
