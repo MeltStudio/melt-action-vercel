@@ -13,6 +13,16 @@ interface VercelProject {
   };
 }
 
+interface VercelDeployment {
+  id: string;
+  alias: string[];
+  url: string;
+}
+
+interface VercelAliases {
+  aliases: { alias: string }[];
+}
+
 class VercelClient {
   private client: Axios;
 
@@ -28,16 +38,36 @@ class VercelClient {
   }
 
   public async team(teamId: string): Promise<VercelTeam> {
-    core.info(`Fetching team ${teamId} information from Vercel`);
+    core.info(`Fetching team '${teamId}' information from Vercel`);
     const response = await this.client.get<VercelTeam>(`/v2/teams/${teamId}`);
 
     return response.data;
   }
 
   public async project(projectId: string): Promise<VercelProject> {
-    core.info(`Fetching project ${projectId} information from Vercel`);
+    core.info(`Fetching project '${projectId}' information from Vercel`);
     const response = await this.client.get<VercelProject>(
       `/v9/projects/${projectId}`
+    );
+
+    return response.data;
+  }
+
+  public async deployment(deploymentId: string): Promise<VercelDeployment> {
+    const cleanId = deploymentId.replace(/^https:\/\//, '');
+
+    core.info(`Fetching deployment '${cleanId}' information from Vercel`);
+    const response = await this.client.get<VercelDeployment>(
+      `/v13/deployments/${cleanId}`
+    );
+
+    return response.data;
+  }
+
+  public async aliases(deploymentId: string): Promise<VercelAliases> {
+    core.info(`Fetching deployment '${deploymentId}' aliases from Vercel`);
+    const response = await this.client.get<VercelAliases>(
+      `/v13/deployments/${deploymentId}/aliases`
     );
 
     return response.data;

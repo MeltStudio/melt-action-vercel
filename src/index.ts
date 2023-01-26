@@ -1,13 +1,12 @@
 import * as core from '@actions/core';
 
-import { validateEvent } from './github';
+import GitHub from './github';
 import Vercel from './vercel';
 
 async function run(): Promise<void> {
   try {
-    validateEvent();
-
-    const vercel = new Vercel();
+    const github = new GitHub();
+    const vercel = new Vercel(github.getRefName());
 
     core.startGroup('Pulling Vercel environment');
     await vercel.pull();
@@ -30,7 +29,10 @@ async function run(): Promise<void> {
       core.endGroup();
     }
 
-    // TODO: add github comment
+    core.startGroup('Creating GitHub comment');
+    const body = await vercel.buildCommentBody(vercelDeploymentUrl);
+    await github.comment(body);
+    core.endGroup();
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message);

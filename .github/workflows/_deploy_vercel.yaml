@@ -12,11 +12,18 @@ on:
       vercel-token:
         description: 'Vercel token to authenticate'
         required: true
+      github-token:
+        description: 'GitHub token used to create the pull request comment'
+        required: false
     inputs:
       environment:
         description: 'The deploy environment'
         required: true
         type: string
+      github-comment:
+        description: 'Create comment on the pull request or commit with the deployment information'
+        required: false
+        type: boolean
 
 jobs:
   deploy:
@@ -44,6 +51,8 @@ jobs:
           vercel-project-id: ${{ secrets.vercel-project-id }}
           vercel-token: ${{ secrets.vercel-token }}
           vercel-is-production: ${{ inputs.environment == 'Production' }}
+          github-comment: ${{ inputs.github-comment }}
+          github-token: ${{ secrets.github-token }}
       - name: Print deployment URL
         run: |
           echo "Deployment URL: ${{ steps.deploy.outputs.deployment-url }}"
