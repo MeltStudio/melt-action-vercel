@@ -14834,7 +14834,7 @@ class Vercel {
                     .update(refNameSlug)
                     .digest('hex')
                     .slice(0, 6);
-                refNameSlug = `${refNameSlug.slice(0, 56)}-${hash}`;
+                refNameSlug = `${refNameSlug.slice(0, maxLength - 7)}-${hash}`;
             }
             const alias = `${project.name}-${refNameSlug}-${team.slug}.vercel.app`;
             core.info(`Calculated alias: ${alias}`);
