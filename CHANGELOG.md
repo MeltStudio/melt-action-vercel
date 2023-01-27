@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.0...v1.1.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* use the correct length when truncating ref name ([aa2e818](https://github.com/MeltStudio/melt-action-vercel/commit/aa2e8181d66719409bc03aa337236467bf9a570b))
+
 # [1.1.0](https://github.com/MeltStudio/melt-action-vercel/compare/v1.0.0...v1.1.0) (2023-01-26)
 
 
