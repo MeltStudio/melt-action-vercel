@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.2...v1.1.3) (2023-02-21)
+
+
+### Bug Fixes
+
+* ignore comments on releases ([ecfe16c](https://github.com/MeltStudio/melt-action-vercel/commit/ecfe16c7c7b79d3641d65435000bfb31fcc30069))
+
 ## [1.1.2](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.1...v1.1.2) (2023-01-27)
 
 
