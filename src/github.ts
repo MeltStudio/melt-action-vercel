@@ -78,6 +78,13 @@ class GitHub {
       return;
     }
 
+    if (!this.isPullRequest && !this.isPush) {
+      core.error(
+        `Ignoring comment because '${github.context.eventName}' is not a valid event`
+      );
+      return;
+    }
+
     const commentId = await this.findDeploymentComment(body.split('\n')[0]);
 
     if (this.isPullRequest) {
@@ -96,13 +103,7 @@ class GitHub {
       } else {
         await this.getClient().createCommitComment(body);
       }
-
-      return;
     }
-
-    core.error(
-      `Ignoring comment because '${github.context.eventName}' is not a valid event`
-    );
   }
 }
 

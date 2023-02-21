@@ -14495,6 +14495,10 @@ class GitHub {
                 core.info("Ignoring comment because 'github-comment' is false");
                 return;
             }
+            if (!this.isPullRequest && !this.isPush) {
+                core.error(`Ignoring comment because '${github.context.eventName}' is not a valid event`);
+                return;
+            }
             const commentId = yield this.findDeploymentComment(body.split('\n')[0]);
             if (this.isPullRequest) {
                 if (commentId != null) {
@@ -14512,9 +14516,7 @@ class GitHub {
                 else {
                     yield this.getClient().createCommitComment(body);
                 }
-                return;
             }
-            core.error(`Ignoring comment because '${github.context.eventName}' is not a valid event`);
         });
     }
 }
