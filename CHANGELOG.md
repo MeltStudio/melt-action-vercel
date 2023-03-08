@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.3...v1.1.4) (2023-03-08)
+
+
+### Bug Fixes
+
+* remove duplicated logs for vercel cli ([1652505](https://github.com/MeltStudio/melt-action-vercel/commit/1652505bdf5c8502ac536ee9277189c6dc65f7a3))
+
 ## [1.1.3](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.2...v1.1.3) (2023-02-21)
 
 
