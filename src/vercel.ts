@@ -50,11 +50,9 @@ class Vercel {
       listeners: {
         stdout: (data) => {
           stdout += data.toString();
-          core.info(data.toString());
         },
         stderr: (data) => {
           stderr += data.toString();
-          core.info(data.toString());
         },
       },
     };
