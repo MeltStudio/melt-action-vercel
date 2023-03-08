@@ -14499,7 +14499,8 @@ class GitHub {
                 core.error(`Ignoring comment because '${github.context.eventName}' is not a valid event`);
                 return;
             }
-            const commentId = yield this.findDeploymentComment(body.split('\n')[0]);
+            const text = body.split('\n')[0];
+            const commentId = yield this.findDeploymentComment(text);
             if (this.isPullRequest) {
                 if (commentId != null) {
                     yield this.getClient().updateIssueComment(commentId, body);
@@ -14767,11 +14768,9 @@ class Vercel {
                 listeners: {
                     stdout: (data) => {
                         stdout += data.toString();
-                        core.info(data.toString());
                     },
                     stderr: (data) => {
                         stderr += data.toString();
-                        core.info(data.toString());
                     },
                 },
             };

@@ -85,7 +85,8 @@ class GitHub {
       return;
     }
 
-    const commentId = await this.findDeploymentComment(body.split('\n')[0]);
+    const text = body.split('\n')[0];
+    const commentId = await this.findDeploymentComment(text);
 
     if (this.isPullRequest) {
       if (commentId != null) {
