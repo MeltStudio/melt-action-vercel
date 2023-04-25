@@ -19,6 +19,10 @@ inputs:
     description: Wheter or not use --prod and --environment=production for commands
     required: false
     default: 'false'
+  local-build:
+    description: Wheter or not to build the project locally or in vercel
+    required: false
+    default: 'true'
   github-comment:
     description: 'Create comment on the pull request or commit with the deployment information'
     required: false

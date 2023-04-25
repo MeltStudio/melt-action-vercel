@@ -21,6 +21,8 @@ class Vercel {
 
   private readonly version: string;
 
+  private readonly localBuild: boolean;
+
   private readonly client: VercelClient;
 
   private readonly refName: string;
@@ -32,6 +34,7 @@ class Vercel {
     this.projectId = core.getInput('vercel-project-id', { required: true });
     this.token = core.getInput('vercel-token', { required: true });
     this.version = core.getInput('vercel-cli-version');
+    this.localBuild = core.getBooleanInput('local-build');
 
     const isProd = core.getBooleanInput('vercel-is-production');
     this.env = isProd ? 'production' : 'preview';
@@ -71,7 +74,12 @@ class Vercel {
     return { stdout, stderr };
   }
 
-  public async pull(): Promise<ExecReturn> {
+  public async pull(): Promise<ExecReturn | null> {
+    if (!this.localBuild) {
+      core.info('Not running pull because local build is disabled');
+      return null;
+    }
+
     const args: string[] = ['pull', '--yes', `--environment=${this.env}`];
     if (this.env === 'preview') {
       args.push(`--git-branch=${this.refName}`);
@@ -80,7 +88,12 @@ class Vercel {
     return this.exec(args);
   }
 
-  public async build(): Promise<ExecReturn> {
+  public async build(): Promise<ExecReturn | null> {
+    if (!this.localBuild) {
+      core.info('Not running build because local build is disabled');
+      return null;
+    }
+
     const args: string[] = ['build'];
     if (this.env === 'production') {
       args.push('--prod');
@@ -90,7 +103,10 @@ class Vercel {
   }
 
   public async deploy(): Promise<ExecReturn> {
-    const args: string[] = ['deploy', '--prebuilt', '--archive=tgz'];
+    const args: string[] = ['deploy'];
+    if (this.localBuild) {
+      args.push('--prebuilt', '--archive=tgz');
+    }
     if (this.env === 'production') {
       args.push('--prod');
     }

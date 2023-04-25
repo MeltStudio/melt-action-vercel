@@ -14753,6 +14753,7 @@ class Vercel {
         this.projectId = core.getInput('vercel-project-id', { required: true });
         this.token = core.getInput('vercel-token', { required: true });
         this.version = core.getInput('vercel-cli-version');
+        this.localBuild = core.getBooleanInput('local-build');
         const isProd = core.getBooleanInput('vercel-is-production');
         this.env = isProd ? 'production' : 'preview';
         this.client = new vercel_client_1.default();
@@ -14785,6 +14786,10 @@ class Vercel {
     }
     pull() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.localBuild) {
+                core.info('Not running pull because local build is disabled');
+                return null;
+            }
             const args = ['pull', '--yes', `--environment=${this.env}`];
             if (this.env === 'preview') {
                 args.push(`--git-branch=${this.refName}`);
@@ -14794,6 +14799,10 @@ class Vercel {
     }
     build() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!this.localBuild) {
+                core.info('Not running build because local build is disabled');
+                return null;
+            }
             const args = ['build'];
             if (this.env === 'production') {
                 args.push('--prod');
@@ -14803,7 +14812,10 @@ class Vercel {
     }
     deploy() {
         return __awaiter(this, void 0, void 0, function* () {
-            const args = ['deploy', '--prebuilt', '--archive=tgz'];
+            const args = ['deploy'];
+            if (this.localBuild) {
+                args.push('--prebuilt', '--archive=tgz');
+            }
             if (this.env === 'production') {
                 args.push('--prod');
             }
