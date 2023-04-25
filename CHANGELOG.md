@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/MeltStudio/melt-action-vercel/compare/v1.2.0...v2.0.0) (2023-04-25)
+
+
+### Features
+
+* set local-build to false by default ([b9f2786](https://github.com/MeltStudio/melt-action-vercel/commit/b9f2786d87d2590ddec022863cc880ab75cf7fec))
+
+
+### BREAKING CHANGES
+
+* set local-build to true by default
+
 # [1.2.0](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.4...v1.2.0) (2023-04-25)
 
 
