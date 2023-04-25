@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.4...v1.2.0) (2023-04-25)
+
+
+### Features
+
+* add local-build input ([6f7adf5](https://github.com/MeltStudio/melt-action-vercel/commit/6f7adf5b0ebc190f6a69d9e455fdb27f369180c9))
+
 ## [1.1.4](https://github.com/MeltStudio/melt-action-vercel/compare/v1.1.3...v1.1.4) (2023-03-08)
 
 
