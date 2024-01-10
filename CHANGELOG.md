@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/MeltStudio/melt-action-vercel/compare/v2.1.0...v3.0.0) (2024-01-10)
+
+
+### Features
+
+* upgrade runtime to node 20 ([1f21dd7](https://github.com/MeltStudio/melt-action-vercel/commit/1f21dd7c0b9a7a8e61be0bb5416da2af7e5f7509))
+
+
+### BREAKING CHANGES
+
+* drop node 16 runtime
+
 # [2.1.0](https://github.com/MeltStudio/melt-action-vercel/compare/v2.0.0...v2.1.0) (2024-01-10)
 
 
