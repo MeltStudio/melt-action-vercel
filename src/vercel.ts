@@ -159,12 +159,13 @@ class Vercel {
   public async buildCommentBody(deploymentId: string): Promise<string> {
     const deployment = await this.client.deployment(deploymentId);
     const aliases = await this.client.aliases(deployment.id);
+    const project = await this.client.project(this.projectId);
 
     const alias = [deployment.url, ...aliases.aliases.map((a) => a.alias)]
       .map((a) => `<a href="https://${a}" target="_blank">${a}</a>`)
       .join('\n');
 
-    return `:rocket: Successfully deployed to the following URLs:\n\n${alias}`;
+    return `:rocket: Successfully deployed '${project.name}' to the following URLs:\n\n${alias}`;
   }
 }
 

@@ -14863,10 +14863,11 @@ class Vercel {
         return __awaiter(this, void 0, void 0, function* () {
             const deployment = yield this.client.deployment(deploymentId);
             const aliases = yield this.client.aliases(deployment.id);
+            const project = yield this.client.project(this.projectId);
             const alias = [deployment.url, ...aliases.aliases.map((a) => a.alias)]
                 .map((a) => `<a href="https://${a}" target="_blank">${a}</a>`)
                 .join('\n');
-            return `:rocket: Successfully deployed to the following URLs:\n\n${alias}`;
+            return `:rocket: Successfully deployed '${project.name}' to the following URLs:\n\n${alias}`;
         });
     }
 }
