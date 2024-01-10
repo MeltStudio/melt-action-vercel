@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/MeltStudio/melt-action-vercel/compare/v2.0.0...v2.1.0) (2024-01-10)
+
+
+### Features
+
+* add project name inside GitHub comments ([87fbd1a](https://github.com/MeltStudio/melt-action-vercel/commit/87fbd1a277c4e98a1d6528b537e9945ab6c24826))
+
 # [2.0.0](https://github.com/MeltStudio/melt-action-vercel/compare/v1.2.0...v2.0.0) (2023-04-25)
 
 
