@@ -10,17 +10,26 @@ class GitHub {
 
   private isRelease: boolean;
 
+  private isPullRequestReview: boolean;
+
   private client: GitHubClient | null;
 
   constructor() {
     this.isPullRequest = github.context.eventName === 'pull_request';
+    this.isPullRequestReview =
+      github.context.eventName === 'pull_request_review';
     this.isPush = github.context.eventName === 'push';
     this.isRelease = github.context.eventName === 'release';
     this.client = null;
 
-    if (!this.isPullRequest && !this.isPush && !this.isRelease) {
+    if (
+      !this.isPullRequest &&
+      !this.isPullRequestReview &&
+      !this.isPush &&
+      !this.isRelease
+    ) {
       throw new Error(
-        `Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, push, release]`
+        `Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release]`
       );
     }
   }
@@ -34,7 +43,7 @@ class GitHub {
   }
 
   public getRefName(): string {
-    if (this.isPullRequest) {
+    if (this.isPullRequest || this.isPullRequestReview) {
       return process.env.GITHUB_HEAD_REF as string;
     }
 
@@ -48,7 +57,7 @@ class GitHub {
   }
 
   private async getEventComments(): Promise<{ id: number; body?: string }[]> {
-    if (this.isPullRequest) {
+    if (this.isPullRequest || this.isPullRequestReview) {
       return this.getClient().listIssueComments();
     }
 
@@ -78,7 +87,7 @@ class GitHub {
       return;
     }
 
-    if (!this.isPullRequest && !this.isPush) {
+    if (!this.isPullRequest && !this.isPush && !this.isPullRequestReview) {
       core.error(
         `Ignoring comment because '${github.context.eventName}' is not a valid event`
       );
@@ -88,7 +97,7 @@ class GitHub {
     const text = body.split('\n')[0];
     const commentId = await this.findDeploymentComment(text);
 
-    if (this.isPullRequest) {
+    if (this.isPullRequest || this.isPullRequestReview) {
       if (commentId != null) {
         await this.getClient().updateIssueComment(commentId, body);
       } else {

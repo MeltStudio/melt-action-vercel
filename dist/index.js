@@ -14446,11 +14446,16 @@ const github_client_1 = __importDefault(__nccwpck_require__(5307));
 class GitHub {
     constructor() {
         this.isPullRequest = github.context.eventName === 'pull_request';
+        this.isPullRequestReview =
+            github.context.eventName === 'pull_request_review';
         this.isPush = github.context.eventName === 'push';
         this.isRelease = github.context.eventName === 'release';
         this.client = null;
-        if (!this.isPullRequest && !this.isPush && !this.isRelease) {
-            throw new Error(`Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, push, release]`);
+        if (!this.isPullRequest &&
+            !this.isPullRequestReview &&
+            !this.isPush &&
+            !this.isRelease) {
+            throw new Error(`Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release]`);
         }
     }
     getClient() {
@@ -14460,7 +14465,7 @@ class GitHub {
         return this.client;
     }
     getRefName() {
-        if (this.isPullRequest) {
+        if (this.isPullRequest || this.isPullRequestReview) {
             return process.env.GITHUB_HEAD_REF;
         }
         if (this.isPush || this.isRelease) {
@@ -14470,7 +14475,7 @@ class GitHub {
     }
     getEventComments() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.isPullRequest) {
+            if (this.isPullRequest || this.isPullRequestReview) {
                 return this.getClient().listIssueComments();
             }
             if (this.isPush) {
@@ -14495,13 +14500,13 @@ class GitHub {
                 core.info("Ignoring comment because 'github-comment' is false");
                 return;
             }
-            if (!this.isPullRequest && !this.isPush) {
+            if (!this.isPullRequest && !this.isPush && !this.isPullRequestReview) {
                 core.error(`Ignoring comment because '${github.context.eventName}' is not a valid event`);
                 return;
             }
             const text = body.split('\n')[0];
             const commentId = yield this.findDeploymentComment(text);
-            if (this.isPullRequest) {
+            if (this.isPullRequest || this.isPullRequestReview) {
                 if (commentId != null) {
                     yield this.getClient().updateIssueComment(commentId, body);
                 }
