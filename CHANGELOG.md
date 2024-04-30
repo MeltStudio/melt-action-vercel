@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/MeltStudio/melt-action-vercel/compare/v3.0.0...v3.1.0) (2024-04-30)
+
+
+### Features
+
+* allow pull_request_review to run action when approved by reviewer ([df74fd0](https://github.com/MeltStudio/melt-action-vercel/commit/df74fd0bb06c1edb243939865beafb51c78c7518))
+
 # [3.0.0](https://github.com/MeltStudio/melt-action-vercel/compare/v2.1.0...v3.0.0) (2024-01-10)
 
 

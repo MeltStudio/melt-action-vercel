@@ -1,6 +1,6 @@
 {
   "name": "melt-action-vercel",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Melt Studio's action to create a Vercel deployment",
   "main": "dist/index.js",
   "repository": "git@github.com:MeltStudio/melt-action-vercel.git",
