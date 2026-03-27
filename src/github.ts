@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
-import GitHubClient from './github-client';
+import GitHubClient from './github-client.js';
 
 class GitHub {
   private isPullRequest: boolean;
@@ -29,7 +29,7 @@ class GitHub {
       !this.isRelease
     ) {
       throw new Error(
-        `Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release]`
+        `Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release]`,
       );
     }
   }
@@ -52,7 +52,7 @@ class GitHub {
     }
 
     throw new Error(
-      `Could not get git ref name for event '${github.context.eventName}'`
+      `Could not get git ref name for event '${github.context.eventName}'`,
     );
   }
 
@@ -66,7 +66,7 @@ class GitHub {
     }
 
     throw new Error(
-      `Unable to get comments for event '${github.context.eventName}'`
+      `Unable to get comments for event '${github.context.eventName}'`,
     );
   }
 
@@ -89,7 +89,7 @@ class GitHub {
 
     if (!this.isPullRequest && !this.isPush && !this.isPullRequestReview) {
       core.error(
-        `Ignoring comment because '${github.context.eventName}' is not a valid event`
+        `Ignoring comment because '${github.context.eventName}' is not a valid event`,
       );
       return;
     }

@@ -14,12 +14,13 @@ on:
           - v1
           - v2
           - v3
+          - v4
 
 jobs:
   tag:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Git config

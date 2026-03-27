@@ -10,8 +10,8 @@
     "inlineSources": false,
     "isolatedModules": true,
     "lib": ["ES6"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noEmit": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -24,8 +24,10 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
+    "rootDir": "src",
     "strict": true,
-    "target": "ES6"
+    "target": "ES6",
+    "types": ["node"]
   },
   "include": ["src"]
 }

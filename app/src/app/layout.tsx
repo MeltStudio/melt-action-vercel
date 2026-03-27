@@ -1,4 +1,11 @@
+import type { Metadata } from 'next';
+
 import './globals.css';
+
+export const metadata: Metadata = {
+  title: 'Melt Action Vercel - Test App',
+  description: 'Test fixture for melt-action-vercel',
+};
 
 export default function RootLayout({
   children,
@@ -7,11 +14,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <head />
       <body>{children}</body>
     </html>
   );
