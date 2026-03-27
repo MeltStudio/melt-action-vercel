@@ -1,5 +1,6 @@
 import eslint from '@eslint/js';
 import prettier from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import tseslint from 'typescript-eslint';
 
@@ -8,9 +9,9 @@ export default tseslint.config(
     ignores: [
       'node_modules/',
       'dist/',
-      'app/',
       'coverage/',
       'eslint.config.js',
+      'app/next.config.js',
     ],
   },
   eslint.configs.recommended,
@@ -24,9 +25,11 @@ export default tseslint.config(
       },
     },
     plugins: {
+      prettier: prettierPlugin,
       'simple-import-sort': simpleImportSort,
     },
     rules: {
+      'prettier/prettier': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'error',
@@ -50,6 +53,17 @@ export default tseslint.config(
           ],
         },
       ],
+    },
+  },
+  {
+    files: ['app/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
+      'simple-import-sort/imports': 'off',
+      'simple-import-sort/exports': 'off',
+      'no-restricted-imports': 'off',
     },
   },
 );
