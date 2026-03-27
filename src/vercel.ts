@@ -1,8 +1,8 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
-import * as crypto from 'crypto';
 
-import VercelClient from './vercel-client';
+import { buildAliasUrl } from './utils.js';
+import VercelClient from './vercel-client.js';
 
 type EnvType = 'preview' | 'production';
 interface ExecReturn {
@@ -68,7 +68,7 @@ class Vercel {
         `--token=${this.token}`,
         `--scope=${this.teamId}`,
       ],
-      options
+      options,
     );
 
     return { stdout, stderr };
@@ -118,35 +118,7 @@ class Vercel {
     const team = await this.client.team(this.teamId);
     const project = await this.client.project(this.projectId);
 
-    let refNameSlug = this.refName
-      .trim()
-      .toLowerCase()
-      .replace(/[_./]+/g, '-')
-      .replace(/--+/, '-')
-      .replace(/[^\w\d-]/, '');
-
-    // 63 is the max allowed length for aliases on vercel, so we need to know
-    // what's the max length the branch slug can have. The -2 accounts for the
-    // dashes used to separate the alias parts.
-    // https://vercel.com/docs/concepts/deployments/generated-urls#truncation
-    const maxLength = 63 - project.name.length - team.slug.length - 2;
-    if (refNameSlug.length > maxLength) {
-      core.info(
-        'Truncating git ref name slug because it exceeds the max length'
-      );
-
-      // vercel uses a hash of 6 characters when the branch name exceeds the max
-      // length
-      // https://vercel.com/docs/concepts/deployments/generated-urls#truncation
-      const hash = crypto
-        .createHash('sha256')
-        .update(refNameSlug)
-        .digest('hex')
-        .slice(0, 6);
-      refNameSlug = `${refNameSlug.slice(0, maxLength - 7)}-${hash}`;
-    }
-
-    const alias = `${project.name}-${refNameSlug}-${team.slug}.vercel.app`;
+    const alias = buildAliasUrl(this.refName, project.name, team.slug);
     core.info(`Calculated alias: ${alias}`);
 
     return alias;

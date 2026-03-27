@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import type { Axios } from 'axios';
+import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 
 interface VercelTeam {
@@ -24,7 +24,7 @@ interface VercelAliases {
 }
 
 class VercelClient {
-  private client: Axios;
+  private client: AxiosInstance;
 
   constructor() {
     const token = core.getInput('vercel-token', { required: true });
@@ -47,7 +47,7 @@ class VercelClient {
   public async project(projectId: string): Promise<VercelProject> {
     core.info(`Fetching project '${projectId}' information from Vercel`);
     const response = await this.client.get<VercelProject>(
-      `/v9/projects/${projectId}`
+      `/v9/projects/${projectId}`,
     );
 
     return response.data;
@@ -58,7 +58,7 @@ class VercelClient {
 
     core.info(`Fetching deployment '${cleanId}' information from Vercel`);
     const response = await this.client.get<VercelDeployment>(
-      `/v13/deployments/${cleanId}`
+      `/v13/deployments/${cleanId}`,
     );
 
     return response.data;
@@ -67,7 +67,7 @@ class VercelClient {
   public async aliases(deploymentId: string): Promise<VercelAliases> {
     core.info(`Fetching deployment '${deploymentId}' aliases from Vercel`);
     const response = await this.client.get<VercelAliases>(
-      `/v13/deployments/${deploymentId}/aliases`
+      `/v13/deployments/${deploymentId}/aliases`,
     );
 
     return response.data;

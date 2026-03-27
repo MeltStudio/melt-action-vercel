@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 
-import GitHub from './github';
-import Vercel from './vercel';
+import GitHub from './github.js';
+import Vercel from './vercel.js';
 
 async function run(): Promise<void> {
   try {

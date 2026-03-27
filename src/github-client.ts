@@ -42,7 +42,7 @@ class GitHubClient {
 
   public async updateCommitComment(
     commentId: number,
-    body: string
+    body: string,
   ): Promise<void> {
     core.info(`Updating comment on commit '${github.context.sha}'`);
 
@@ -76,7 +76,7 @@ class GitHubClient {
 
   public async updateIssueComment(
     commentId: number,
-    body: string
+    body: string,
   ): Promise<void> {
     core.info(`Updating comment on issue '${github.context.issue.number}'`);
 
