@@ -2,26 +2,35 @@ name: Run semantic release
 
 on:
   workflow_call:
-    secrets:
-      semantic-release-token:
-        description: 'GitHub token for semantic release'
-        required: true
+    outputs:
+      new-release-published:
+        description: 'Whether a new release was published'
+        value: ${{ jobs.release.outputs.new-release-published }}
+      new-release-version:
+        description: 'The new release version'
+        value: ${{ jobs.release.outputs.new-release-version }}
 
 env:
   HUSKY: 0
-  GITHUB_TOKEN: ${{ secrets.semantic-release-token }}
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      new-release-published: ${{ steps.semantic.outputs.new_release_published }}
+      new-release-version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
           fetch-depth: 0
 
       - name: Release
+        id: semantic
         uses: cycjimmy/semantic-release-action@v4
         with:
           semantic_version: 24
@@ -29,3 +38,5 @@ jobs:
             @semantic-release/changelog@6
             @semantic-release/git@10
             @semantic-release/github@11
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
