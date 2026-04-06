@@ -14,5 +14,15 @@ jobs:
     name: Create a new production release
     needs: [code-checks]
     uses: ./.github/workflows/_sem_release.yaml
+
+  deploy:
+    name: Deploy to vercel
+    needs: [release]
+    if: needs.release.outputs.new-release-published == 'true'
+    uses: ./.github/workflows/_deploy_vercel.yaml
+    with:
+      environment: Production
     secrets:
-      semantic-release-token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+      vercel-team-id: ${{ secrets.VERCEL_ORG_ID }}
+      vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      vercel-token: ${{ secrets.VERCEL_TOKEN }}
