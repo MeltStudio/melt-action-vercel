@@ -40846,12 +40846,14 @@ class github_GitHub {
             github_context.eventName === 'pull_request_review';
         this.isPush = github_context.eventName === 'push';
         this.isRelease = github_context.eventName === 'release';
+        this.isWorkflowDispatch = github_context.eventName === 'workflow_dispatch';
         this.client = null;
         if (!this.isPullRequest &&
             !this.isPullRequestReview &&
             !this.isPush &&
-            !this.isRelease) {
-            throw new Error(`Invalid event '${github_context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release]`);
+            !this.isRelease &&
+            !this.isWorkflowDispatch) {
+            throw new Error(`Invalid event '${github_context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release, workflow_dispatch]`);
         }
     }
     getClient() {
@@ -40864,7 +40866,7 @@ class github_GitHub {
         if (this.isPullRequest || this.isPullRequestReview) {
             return process.env.GITHUB_HEAD_REF;
         }
-        if (this.isPush || this.isRelease) {
+        if (this.isPush || this.isRelease || this.isWorkflowDispatch) {
             return process.env.GITHUB_REF_NAME;
         }
         throw new Error(`Could not get git ref name for event '${github_context.eventName}'`);
@@ -40874,7 +40876,7 @@ class github_GitHub {
             if (this.isPullRequest || this.isPullRequestReview) {
                 return this.getClient().listIssueComments();
             }
-            if (this.isPush) {
+            if (this.isPush || this.isWorkflowDispatch) {
                 return this.getClient().listCommitComments();
             }
             throw new Error(`Unable to get comments for event '${github_context.eventName}'`);
@@ -40896,7 +40898,10 @@ class github_GitHub {
                 info("Ignoring comment because 'github-comment' is false");
                 return;
             }
-            if (!this.isPullRequest && !this.isPush && !this.isPullRequestReview) {
+            if (!this.isPullRequest &&
+                !this.isPush &&
+                !this.isPullRequestReview &&
+                !this.isWorkflowDispatch) {
                 error(`Ignoring comment because '${github_context.eventName}' is not a valid event`);
                 return;
             }
@@ -40911,7 +40916,7 @@ class github_GitHub {
                 }
                 return;
             }
-            if (this.isPush) {
+            if (this.isPush || this.isWorkflowDispatch) {
                 if (commentId != null) {
                     yield this.getClient().updateCommitComment(commentId, body);
                 }
