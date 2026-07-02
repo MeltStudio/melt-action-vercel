@@ -12,6 +12,8 @@ class GitHub {
 
   private isPullRequestReview: boolean;
 
+  private isWorkflowDispatch: boolean;
+
   private client: GitHubClient | null;
 
   constructor() {
@@ -20,16 +22,18 @@ class GitHub {
       github.context.eventName === 'pull_request_review';
     this.isPush = github.context.eventName === 'push';
     this.isRelease = github.context.eventName === 'release';
+    this.isWorkflowDispatch = github.context.eventName === 'workflow_dispatch';
     this.client = null;
 
     if (
       !this.isPullRequest &&
       !this.isPullRequestReview &&
       !this.isPush &&
-      !this.isRelease
+      !this.isRelease &&
+      !this.isWorkflowDispatch
     ) {
       throw new Error(
-        `Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release]`,
+        `Invalid event '${github.context.eventName}', please use one or multiple of [pull_request, pull_request_review, push, release, workflow_dispatch]`,
       );
     }
   }
@@ -47,7 +51,7 @@ class GitHub {
       return process.env.GITHUB_HEAD_REF as string;
     }
 
-    if (this.isPush || this.isRelease) {
+    if (this.isPush || this.isRelease || this.isWorkflowDispatch) {
       return process.env.GITHUB_REF_NAME as string;
     }
 
@@ -61,7 +65,7 @@ class GitHub {
       return this.getClient().listIssueComments();
     }
 
-    if (this.isPush) {
+    if (this.isPush || this.isWorkflowDispatch) {
       return this.getClient().listCommitComments();
     }
 
@@ -87,7 +91,12 @@ class GitHub {
       return;
     }
 
-    if (!this.isPullRequest && !this.isPush && !this.isPullRequestReview) {
+    if (
+      !this.isPullRequest &&
+      !this.isPush &&
+      !this.isPullRequestReview &&
+      !this.isWorkflowDispatch
+    ) {
       core.error(
         `Ignoring comment because '${github.context.eventName}' is not a valid event`,
       );
@@ -107,7 +116,7 @@ class GitHub {
       return;
     }
 
-    if (this.isPush) {
+    if (this.isPush || this.isWorkflowDispatch) {
       if (commentId != null) {
         await this.getClient().updateCommitComment(commentId, body);
       } else {
